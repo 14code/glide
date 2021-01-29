@@ -16,6 +16,7 @@ use League\Glide\Manipulators\Contrast;
 use League\Glide\Manipulators\Crop;
 use League\Glide\Manipulators\Encode;
 use League\Glide\Manipulators\Filter;
+use League\Glide\Manipulators\Flip;
 use League\Glide\Manipulators\Gamma;
 use League\Glide\Manipulators\Orientation;
 use League\Glide\Manipulators\Pixelate;
@@ -28,12 +29,14 @@ class ServerFactory
 {
     /**
      * Configuration parameters.
+     *
      * @var array
      */
     protected $config;
 
     /**
      * Create ServerFactory instance.
+     *
      * @param array $config Configuration parameters.
      */
     public function __construct(array $config = [])
@@ -43,6 +46,7 @@ class ServerFactory
 
     /**
      * Get configured server.
+     *
      * @return Server Configured Glide server.
      */
     public function getServer()
@@ -62,11 +66,16 @@ class ServerFactory
         $server->setBaseUrl($this->getBaseUrl());
         $server->setResponseFactory($this->getResponseFactory());
 
+        if ($this->getTempDir()) {
+            $server->setTempDir($this->getTempDir());
+        }
+
         return $server;
     }
 
     /**
      * Get source file system.
+     *
      * @return FilesystemInterface Source file system.
      */
     public function getSource()
@@ -86,6 +95,7 @@ class ServerFactory
 
     /**
      * Get source path prefix.
+     *
      * @return string|null Source path prefix.
      */
     public function getSourcePathPrefix()
@@ -97,6 +107,7 @@ class ServerFactory
 
     /**
      * Get cache file system.
+     *
      * @return FilesystemInterface Cache file system.
      */
     public function getCache()
@@ -116,6 +127,7 @@ class ServerFactory
 
     /**
      * Get cache path prefix.
+     *
      * @return string|null Cache path prefix.
      */
     public function getCachePathPrefix()
@@ -126,7 +138,20 @@ class ServerFactory
     }
 
     /**
+     * Get temporary EXIF data directory.
+     *
+     * @return string
+     */
+    public function getTempDir()
+    {
+        if (isset($this->config['temp_dir'])) {
+            return $this->config['temp_dir'];
+        }
+    }
+
+    /**
      * Get the group cache in folders setting.
+     *
      * @return bool Whether to group cache in folders.
      */
     public function getGroupCacheInFolders()
@@ -140,6 +165,7 @@ class ServerFactory
 
     /**
      * Get the cache with file extensions setting.
+     *
      * @return bool Whether to cache with file extensions.
      */
     public function getCacheWithFileExtensions()
@@ -153,6 +179,7 @@ class ServerFactory
 
     /**
      * Get watermarks file system.
+     *
      * @return FilesystemInterface|null Watermarks file system.
      */
     public function getWatermarks()
@@ -172,6 +199,7 @@ class ServerFactory
 
     /**
      * Get watermarks path prefix.
+     *
      * @return string|null Watermarks path prefix.
      */
     public function getWatermarksPathPrefix()
@@ -183,6 +211,7 @@ class ServerFactory
 
     /**
      * Get image manipulation API.
+     *
      * @return Api Image manipulation API.
      */
     public function getApi()
@@ -195,6 +224,7 @@ class ServerFactory
 
     /**
      * Get Intervention image manager.
+     *
      * @return ImageManager Intervention image manager.
      */
     public function getImageManager()
@@ -212,6 +242,7 @@ class ServerFactory
 
     /**
      * Get image manipulators.
+     *
      * @return array Image manipulators.
      */
     public function getManipulators()
@@ -225,6 +256,7 @@ class ServerFactory
             new Gamma(),
             new Sharpen(),
             new Filter(),
+            new Flip(),
             new Blur(),
             new Pixelate(),
             new Watermark($this->getWatermarks(), $this->getWatermarksPathPrefix()),
@@ -236,6 +268,7 @@ class ServerFactory
 
     /**
      * Get maximum image size.
+     *
      * @return int|null Maximum image size.
      */
     public function getMaxImageSize()
@@ -247,6 +280,7 @@ class ServerFactory
 
     /**
      * Get default image manipulations.
+     *
      * @return array Default image manipulations.
      */
     public function getDefaults()
@@ -260,6 +294,7 @@ class ServerFactory
 
     /**
      * Get preset image manipulations.
+     *
      * @return array Preset image manipulations.
      */
     public function getPresets()
@@ -273,6 +308,7 @@ class ServerFactory
 
     /**
      * Get base URL.
+     *
      * @return string|null Base URL.
      */
     public function getBaseUrl()
@@ -284,6 +320,7 @@ class ServerFactory
 
     /**
      * Get response factory.
+     *
      * @return ResponseFactoryInterface|null Response factory.
      */
     public function getResponseFactory()
@@ -295,7 +332,9 @@ class ServerFactory
 
     /**
      * Create configured server.
-     * @param  array  $config Configuration parameters.
+     *
+     * @param array $config Configuration parameters.
+     *
      * @return Server Configured server.
      */
     public static function create(array $config = [])

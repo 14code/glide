@@ -11,8 +11,10 @@ use League\Glide\Manipulators\Helpers\Color;
 class Background extends BaseManipulator
 {
     /**
-     * Perform blur image manipulation.
-     * @param  Image $image The source image.
+     * Perform background image manipulation.
+     *
+     * @param Image $image The source image.
+     *
      * @return Image The manipulated image.
      */
     public function run(Image $image)
